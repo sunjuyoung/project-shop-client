@@ -1,8 +1,24 @@
-import create from "zustand";
+import { create } from "zustand";
+
+let nextId = 0;
 
 export const useStore = create((set) => ({
-  bears: 0,
-  text: "Hello",
-  increase: () => set((state) => ({ bears: state.bears + 1 })),
-  decrease: () => set((state) => ({ bears: state.bears - 1 })),
+  todo: [],
+
+  addTodo: (title) =>
+    set((prev) => ({
+      todo: [...prev.todo, { title: title, id: ++nextId, done: false }],
+    })),
+
+  removeTodo: (id) =>
+    set((prev) => ({
+      todo: prev.todo.filter((todo) => todo.id !== id),
+    })),
+
+  toggleTodo: (id) =>
+    set((prev) => ({
+      todo: prev.todo.map((todo) =>
+        todo.id === id ? { ...todo, done: !todo.done } : todo
+      ),
+    })),
 }));
