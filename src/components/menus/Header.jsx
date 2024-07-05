@@ -100,6 +100,10 @@ const Header = () => {
     }
   };
 
+  const handleMoveHome = () => {
+    navigate("/");
+  };
+
   return (
     <AppBar
       position="static"
@@ -117,7 +121,9 @@ const Header = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">SHOP</Typography>
+          <Typography onClick={handleMoveHome} variant="h6">
+            SHOP
+          </Typography>
         </Box>
 
         {/* Search Bar */}

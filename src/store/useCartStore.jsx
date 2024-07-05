@@ -1,41 +1,62 @@
-// src/store/cartStore.js
 import { create } from "zustand";
 
-const useCartStore = create((set) => ({
-  cart: [],
-  addToCart: (product) =>
+const useCartStore = create((set, get) => ({
+  cartItems: [],
+
+  addToCart: (item) =>
     set((state) => {
-      const existingProduct = state.cart.find((item) => item.id === product.id);
-      if (existingProduct) {
+      const existingItem = state.cartItems.find((i) => i.id === item.id);
+      if (existingItem) {
         return {
-          cart: state.cart.map((item) =>
-            item.id === product.id
-              ? { ...item, quantity: item.quantity + product.quantity }
-              : item
+          cartItems: state.cartItems.map((i) =>
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
           ),
         };
-      } else {
-        return { cart: [...state.cart, product] };
       }
+      return {
+        cartItems: [
+          ...state.cartItems,
+          { ...item, quantity: 1, selected: true },
+        ],
+      };
     }),
-  removeFromCart: (productId) =>
+
+  removeFromCart: (id) =>
     set((state) => ({
-      cart: state.cart.filter((item) => item.id !== productId),
+      cartItems: state.cartItems.filter((item) => item.id !== id),
     })),
-  clearCart: () => set(() => ({ cart: [] })),
-  incrementItem: (productId) =>
+
+  updateQuantity: (id, quantity) =>
     set((state) => ({
-      cart: state.cart.map((item) =>
-        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item
+      cartItems: state.cartItems.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(0, quantity) } : item
       ),
     })),
-  decrementItem: (productId) =>
+
+  toggleSelect: (id) =>
     set((state) => ({
-      cart: state.cart.map((item) =>
-        item.id === productId && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
+      cartItems: state.cartItems.map((item) =>
+        item.id === id ? { ...item, selected: !item.selected } : item
       ),
     })),
+
+  clearCart: () => set({ cartItems: [] }),
+
+  getTotalPrice: () => {
+    return get().cartItems.reduce(
+      (total, item) =>
+        item.selected ? total + item.price * item.quantity : total,
+      0
+    );
+  },
+
+  getTotalItems: () => {
+    return get().cartItems.reduce((total, item) => total + item.quantity, 0);
+  },
+
+  getSelectedItems: () => {
+    return get().cartItems.filter((item) => item.selected);
+  },
 }));
+
 export default useCartStore;

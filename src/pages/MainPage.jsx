@@ -1,17 +1,19 @@
+import CategoryList from "../components/category/CategoryList";
 import Slider from "../components/menus/Slider";
-import ProductList from "../components/product/ProductList";
-import ProductList2 from "../components/product/ProductList2";
-import ProductListRecent from "../components/product/ProductListRecent";
+import MDRecommendations from "../components/product/MDRecommendations";
+import NewProducts from "../components/product/NewProducts";
+
+import TrendingItems from "../components/product/TrendingItems";
 import BasicLayout from "../layouts/BasicLayout";
 
 const MainPage = () => {
   return (
     <BasicLayout>
+      <CategoryList />
       <Slider />
-      <ProductListRecent type="최근" />
-      <ProductList type="featured" />
-      <ProductList2 type="new" />
-      {/* 다른 컴포넌트 및 콘텐츠 추가 */}
+      <NewProducts />
+      <TrendingItems />
+      <MDRecommendations />
     </BasicLayout>
   );
 };

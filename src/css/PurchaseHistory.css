@@ -1,0 +1,48 @@
+/* Add this CSS to your stylesheet */
+.purchase-history .purchase-item {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.purchase-history .purchase-item img {
+  width: 9rem;
+  height: 9rem;
+  object-cover: cover;
+  border-radius: 0.5rem;
+}
+.purchase-history .purchase-item .details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.purchase-history .purchase-item .details h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.purchase-history .purchase-item .details p {
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+.order-status {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
+.order-status.결제완료 {
+  background-color: #34d399;
+  color: white;
+}
+.order-status.배송중 {
+  background-color: #fbbf24;
+  color: white;
+}
+.order-status.배송완료 {
+  background-color: #60a5fa;
+  color: white;
+}
