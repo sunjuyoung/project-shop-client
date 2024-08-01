@@ -1,6 +1,8 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const MDRecommendations = () => {
+  const navigate = useNavigate();
   const mdRecommendations = [
     {
       id: 1,
@@ -57,6 +59,10 @@ const MDRecommendations = () => {
     },
   ];
 
+  const handleClick = (id) => {
+    navigate(`/product/${id}`);
+  };
+
   return (
     <section className="mb-12">
       <h2 className="mb-4 text-2xl font-semibold text-gray-800">
@@ -66,7 +72,8 @@ const MDRecommendations = () => {
         {mdRecommendations.map((item) => (
           <div
             key={item.id}
-            className="overflow-hidden transition-all duration-300 rounded-lg shadow-md bg-gradient-to-r from-blue-50 to-indigo-50 hover:shadow-xl"
+            className="overflow-hidden transition-all duration-300 rounded-lg shadow-md bg-gradient-to-r from-blue-50 to-indigo-50 hover:scale-105 hover:shadow-xl"
+            onClick={() => handleClick(item.id)}
           >
             <img
               src={item.img}

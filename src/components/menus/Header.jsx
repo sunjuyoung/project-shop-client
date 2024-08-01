@@ -9,19 +9,17 @@ import {
   Box,
   ClickAwayListener,
   Paper,
-  List,
-  ListItem,
-  ListItemText,
-  Collapse,
+  Badge,
   InputBase,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
+import { logout } from "../../slice/loginSlice";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -66,6 +64,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Header = () => {
+  const [cartItemCount, setCartItemCount] = useState(1); // 예시로 0으로 초기화
   const [anchorEl, setAnchorEl] = useState(null);
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
@@ -73,6 +72,7 @@ const Header = () => {
 
   const loginState = useSelector((state) => state.loginSlice);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleMenu = (event) => {
     if (loginState.email === "") {
@@ -104,6 +104,16 @@ const Header = () => {
     navigate("/");
   };
 
+  const handleMoveCart = () => {
+    navigate("/cart");
+  };
+
+  const handleLogout = () => {
+    setAnchorEl(null);
+    dispatch(logout());
+    navigate("/login");
+  };
+
   return (
     <AppBar
       position="static"
@@ -122,7 +132,7 @@ const Header = () => {
             <MenuIcon />
           </IconButton>
           <Typography onClick={handleMoveHome} variant="h6">
-            SHOP
+            <button>SHOP</button>
           </Typography>
         </Box>
 
@@ -138,8 +148,26 @@ const Header = () => {
         </Search>
 
         <Box className="flex items-center space-x-4">
-          <IconButton edge="end" color="inherit" aria-label="cart">
-            <FaShoppingCart />
+          <IconButton
+            edge="end"
+            color="inherit"
+            aria-label="cart"
+            onClick={handleMoveCart}
+          >
+            <Badge
+              badgeContent={cartItemCount}
+              color="error"
+              sx={{
+                "& .MuiBadge-badge": {
+                  right: -3,
+                  top: 3,
+                  border: `2px solid white`,
+                  padding: "0 4px",
+                },
+              }}
+            >
+              <FaShoppingCart />
+            </Badge>
           </IconButton>
           <IconButton
             edge="end"
@@ -153,7 +181,7 @@ const Header = () => {
             id="menu-appbar"
             anchorEl={anchorEl}
             anchorOrigin={{
-              vertical: "top",
+              vertical: "bottom",
               horizontal: "right",
             }}
             keepMounted
@@ -163,10 +191,17 @@ const Header = () => {
             }}
             open={Boolean(anchorEl)}
             onClose={() => setAnchorEl(null)}
+            PaperProps={{
+              style: {
+                marginTop: "5px",
+                marginLeft: "20px",
+                borderRadius: "10px",
+              },
+            }}
           >
             <MenuItem>프로필</MenuItem>
             <MenuItem>내 계정</MenuItem>
-            <MenuItem>로그아웃</MenuItem>
+            <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
           </Menu>
         </Box>
       </Toolbar>
@@ -183,104 +218,7 @@ const Header = () => {
               zIndex: 10,
               bgcolor: "background.paper",
             }}
-          >
-            <List>
-              <ListItem button onClick={() => handleSubCategoryToggle("의류")}>
-                <ListItemText primary="의류" />
-                {openSubCategory === "의류" ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse
-                in={openSubCategory === "의류"}
-                timeout="auto"
-                unmountOnExit
-              >
-                <List component="div" disablePadding>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="티셔츠" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="바지" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="자켓" />
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItem button onClick={() => handleSubCategoryToggle("신발")}>
-                <ListItemText primary="신발" />
-                {openSubCategory === "신발" ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse
-                in={openSubCategory === "신발"}
-                timeout="auto"
-                unmountOnExit
-              >
-                <List component="div" disablePadding>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="운동화" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="부츠" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="샌들" />
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItem button onClick={() => handleSubCategoryToggle("가방")}>
-                <ListItemText primary="가방" />
-                {openSubCategory === "가방" ? <ExpandLess /> : <ExpandMore />}
-              </ListItem>
-              <Collapse
-                in={openSubCategory === "가방"}
-                timeout="auto"
-                unmountOnExit
-              >
-                <List component="div" disablePadding>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="백팩" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="핸드백" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="클러치" />
-                  </ListItem>
-                </List>
-              </Collapse>
-
-              <ListItem
-                button
-                onClick={() => handleSubCategoryToggle("액세서리")}
-              >
-                <ListItemText primary="액세서리" />
-                {openSubCategory === "액세서리" ? (
-                  <ExpandLess />
-                ) : (
-                  <ExpandMore />
-                )}
-              </ListItem>
-              <Collapse
-                in={openSubCategory === "액세서리"}
-                timeout="auto"
-                unmountOnExit
-              >
-                <List component="div" disablePadding>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="모자" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="목걸이" />
-                  </ListItem>
-                  <ListItem button sx={{ pl: 4 }}>
-                    <ListItemText primary="귀걸이" />
-                  </ListItem>
-                </List>
-              </Collapse>
-            </List>
-          </Paper>
+          ></Paper>
         </ClickAwayListener>
       )}
     </AppBar>

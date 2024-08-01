@@ -6,7 +6,7 @@ const CartRead = lazy(() => import("../pages/CartPage"));
 const cartRouter = () => {
   return [
     {
-      path: ":id",
+      path: "",
       element: (
         <Suspense fallback={Loading}>
           <CartRead />

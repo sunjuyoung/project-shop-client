@@ -41,13 +41,10 @@ const Footer = () => {
       </div>
       <div className="flex items-center justify-between mt-10 bottom">
         <div className="font-bold left">
-          <span className="text-blue-800 logo">SHOP</span>
+          <span className="text-blue-800 logo">SHOP </span>
           <span className="text-xs copyright">
-            © Copyright 2023. All Rights Reserved
+            © Copyright 2024. All Rights Reserved
           </span>
-        </div>
-        <div className="right">
-          <img src="/img/payment.png" alt="Payment methods" className="h-12" />
         </div>
       </div>
     </div>

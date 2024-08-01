@@ -3,11 +3,17 @@ import { Suspense, lazy } from "react";
 import productRouter from "./productRouter.jsx";
 import cartRouter from "./cartRouter.jsx";
 import purchaseRouter from "./purchaseRouter.jsx";
+import customerRouter from "./customerRouter.jsx";
+import BasicLayout from "../layouts/BasicLayout.jsx";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage.jsx"));
 const Login = lazy(() => import("../pages/LoginPage.jsx"));
 const CartRead = lazy(() => import("../pages/CartIndexPage.jsx"));
+const SignUp = lazy(() => import("../pages/SignUpPgae.jsx"));
+const CustomerProfile = lazy(() =>
+  import("../pages/customer/CustomerProfilePage")
+);
 
 const root = createBrowserRouter([
   {
@@ -27,8 +33,25 @@ const root = createBrowserRouter([
     ),
   },
   {
+    path: "/signup",
+    element: (
+      <Suspense fallback={Loading}>
+        <SignUp />
+      </Suspense>
+    ),
+  },
+  {
     path: "product",
     children: productRouter(),
+  },
+  {
+    path: "customer",
+    element: (
+      <Suspense fallback={Loading}>
+        <CustomerProfile />
+      </Suspense>
+    ),
+    children: customerRouter(),
   },
   {
     path: "cart",
