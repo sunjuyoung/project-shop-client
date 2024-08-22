@@ -1,19 +1,19 @@
 import { Suspense, lazy } from "react";
 
 const Loading = <div>Loading...</div>;
-const CartRead = lazy(() => import("../pages/CartPage"));
+const Naver = lazy(() => import("../pages/oauth/NaverRedirectPage"));
 
-const cartRouter = () => {
+const oauthRouter = () => {
   return [
     {
-      path: ":userId",
+      path: "naver",
       element: (
         <Suspense fallback={Loading}>
-          <CartRead />
+          <Naver />
         </Suspense>
       ),
     },
   ];
 };
 
-export default cartRouter;
+export default oauthRouter;

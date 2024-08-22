@@ -72,11 +72,12 @@ const CategoryMenu = () => {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {subcategories.map((subcategory) => (
-          <MenuItem key={subcategory} onClick={handleClose}>
-            {subcategory}
-          </MenuItem>
-        ))}
+        {subcategories.length > 0 &&
+          subcategories.map((subcategory) => (
+            <MenuItem key={subcategory} onClick={handleClose}>
+              {subcategory}
+            </MenuItem>
+          ))}
       </Menu>
     </AppBar>
   );

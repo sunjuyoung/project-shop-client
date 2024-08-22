@@ -1,20 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useCartStore from "../../store/useCartStore";
+import useCustomLogin from "../../hooks/useCustomLogin";
+import { useDispatch, useSelector } from "react-redux";
+import useCustomCart from "../../hooks/useCustomCart";
+import CartItemComponent from "./CartItemComponent";
 
 const CartComponent = () => {
-  const { cartItems, removeFromCart, updateQuantity, toggleSelect } =
-    useCartStore();
+  // const { cartItems, removeFromCart, updateQuantity, toggleSelect } =
+  //   useCartStore();
 
+  const { isLogin, loginState } = useCustomLogin();
+  const { refreshCart, changeCart, cartItems } = useCustomCart();
+
+  useEffect(() => {
+    if (isLogin) {
+      refreshCart();
+    }
+  }, [isLogin]);
+
+  console.log(cartItems);
   return (
     <div className="w-full space-y-4 md:w-2/3">
       {cartItems.map((item) => (
+        <CartItemComponent key={item.cartItemId} item={item} />
+      ))}
+      {/* {cartItems.map((item) => (
         <div
           key={item.id}
           className="flex items-center p-4 bg-white rounded-lg shadow"
         >
           <input
             type="checkbox"
-            checked={item.selected}
+            checked="false"
             onChange={() => toggleSelect(item.id)}
             className="mr-4"
           />
@@ -52,7 +69,7 @@ const CartComponent = () => {
             X
           </button>
         </div>
-      ))}
+      ))} */}
     </div>
   );
 };

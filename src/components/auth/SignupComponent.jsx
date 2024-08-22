@@ -174,29 +174,76 @@ const SignupComponent = () => {
             >
               가입하기
             </Button>
-            <Grid container justifyContent="center">
-              <Grid item>
-                <IconButton
-                  onClick={handleGoogleSignup}
-                  sx={{
-                    mt: 1,
-                    mb: 2,
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    py: 1,
-                    "&:hover": {
-                      backgroundColor: "#f5f5f5",
-                    },
-                  }}
-                >
-                  <GoogleIcon sx={{ mr: 1 }} />
-                  <Typography variant="button">Google로 회원가입</Typography>
-                </IconButton>
-              </Grid>
-            </Grid>
+            <div className="flex-row items-center justify-center">
+              <IconButton
+                onClick={handleGoogleSignup}
+                sx={{
+                  mt: 1,
+                  mb: 1,
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  py: 1,
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+              >
+                <img
+                  src="/img/btn_naver.png"
+                  style={{ width: "25px", margin: "4px" }}
+                />
+                <Typography style={{ fontWeight: "bold" }} variant="button">
+                  NAVER로 회원가입
+                </Typography>
+              </IconButton>
+              <IconButton
+                onClick={handleGoogleSignup}
+                sx={{
+                  mt: 1,
+                  mb: 1,
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  py: 1,
+
+                  width: "191px",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+              >
+                <img
+                  src="/img/btn_kakao.png"
+                  style={{ width: "25px", margin: "4px" }}
+                />
+                <Typography style={{ fontWeight: "bold" }} variant="button">
+                  KAKAO로 회원가입
+                </Typography>
+              </IconButton>
+              <IconButton
+                onClick={handleGoogleSignup}
+                sx={{
+                  mt: 1,
+                  mb: 2,
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  py: 1,
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+              >
+                <img
+                  src="/img/btn_google.png"
+                  style={{ width: "25px", margin: "4px" }}
+                />
+                <Typography style={{ fontWeight: "bold" }} variant="button">
+                  Google로 회원가입
+                </Typography>
+              </IconButton>
+            </div>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/login" variant="body2">
                   이미 계정이 있으신가요? 로그인
                 </Link>
               </Grid>

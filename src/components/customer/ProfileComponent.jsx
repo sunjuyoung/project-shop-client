@@ -30,6 +30,9 @@ const ProfileButton = styled(Button)(({ theme }) => ({
 }));
 
 const ProfileComponent = () => {
+
+  
+
   const [profile, setProfile] = useState({
     name: "홍길동",
     email: "hong@example.com",

@@ -22,6 +22,7 @@ import StyledAvatar from "../ui/StyleAvatar";
 import { useDispatch } from "react-redux";
 import useCustomLogin from "../../hooks/useCustomLogin";
 import { useNavigate } from "react-router-dom";
+import { getNaverLoginLink } from "../../api/oauth/naverApi";
 
 const theme = createTheme();
 
@@ -56,6 +57,13 @@ const LoginComponent = () => {
 
   const handleGoogleLogin = () => {
     console.log("Google 로그인 시도");
+  };
+
+  const handleNaverLogin = () => {
+    console.log("Naver 로그인 시도");
+    const naverLink = getNaverLoginLink();
+    console.log(naverLink);
+    window.location.href = naverLink;
   };
 
   return (
@@ -110,39 +118,63 @@ const LoginComponent = () => {
             <Divider sx={{ my: 2 }}>또는</Divider>
             <div className="flex justify-center">
               <IconButton
-                onClick={handleGoogleLogin}
+                onClick={handleNaverLogin}
                 sx={{
                   mt: 1,
 
                   mb: 2,
                   border: "1px solid #ccc",
                   borderRadius: "4px",
-                  py: 1,
-
+                  width: "55px",
                   "&:hover": {
                     backgroundColor: "#f5f5f5",
                   },
                 }}
               >
-                <GoogleIcon sx={{ mr: 1 }} />
-                <Typography variant="button">Google로 로그인</Typography>
+                <img
+                  src="/img/btn_naver.png"
+                  style={{ width: "25px", margin: "4px" }}
+                />
               </IconButton>
               <IconButton
                 onClick={handleGoogleLogin}
                 sx={{
                   mt: 1,
-                  ml: 1,
+                  ml: 2,
                   mb: 2,
                   border: "1px solid #ccc",
                   borderRadius: "4px",
-                  py: 0,
+                  width: "55px",
                   "&:hover": {
                     backgroundColor: "#f5f5f5",
                   },
                 }}
               >
-                <GoogleIcon sx={{ mr: 1 }} />
-                <Typography variant="button">Google로 로그인</Typography>
+                <img
+                  src="/img/btn_kakao.png"
+                  style={{ width: "30px", margin: "4px" }}
+                />
+              </IconButton>
+              <IconButton
+                onClick={handleGoogleLogin}
+                sx={{
+                  mt: 1,
+                  ml: 2,
+                  mb: 2,
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  py: 0,
+                  width: "55px",
+                  "&:hover": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
+              >
+                <img
+                  src="/img/btn_google.png"
+                  style={{ width: "20px", margin: "4px" }}
+                />
+                {/* <Typography variant="button">Google 로그인</Typography> */}
               </IconButton>
             </div>
             <Grid container>

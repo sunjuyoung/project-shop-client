@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import { logout } from "../../slice/loginSlice";
+import useCustomLogin from "../../hooks/useCustomLogin";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -70,7 +71,8 @@ const Header = () => {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(null);
 
-  const loginState = useSelector((state) => state.loginSlice);
+  const { isLogin, loginState } = useCustomLogin();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -105,13 +107,17 @@ const Header = () => {
   };
 
   const handleMoveCart = () => {
-    navigate("/cart");
+    navigate(`/cart/${loginState.id}`);
   };
 
   const handleLogout = () => {
     setAnchorEl(null);
     dispatch(logout());
     navigate("/login");
+  };
+  const handleProfileMenu = () => {
+    setAnchorEl(null);
+    navigate(`/customer/${loginState.id}`);
   };
 
   return (
@@ -199,7 +205,8 @@ const Header = () => {
               },
             }}
           >
-            <MenuItem>프로필</MenuItem>
+            {isLogin && <MenuItem>{loginState.nickname}</MenuItem>}
+            <MenuItem onClick={handleProfileMenu}>프로필</MenuItem>
             <MenuItem>내 계정</MenuItem>
             <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
           </Menu>

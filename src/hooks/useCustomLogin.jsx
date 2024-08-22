@@ -7,6 +7,12 @@ const useCustomLogin = () => {
   const navigate = useNavigate();
   const loginState = useSelector((state) => state.loginSlice);
 
+  const isLogin = loginState.email ? true : false;
+
+  const exceptionLoginHandle = (ex) => {
+    console.log(ex);
+  };
+
   const doLogin = async (loginParam) => {
     const action = await dispatch(loginPostAsync(loginParam));
 
@@ -36,6 +42,7 @@ const useCustomLogin = () => {
     moveToLogin,
     moveToLoginReturn,
     loginState,
+    isLogin,
   };
 };
 

@@ -4,7 +4,7 @@ import productRouter from "./productRouter.jsx";
 import cartRouter from "./cartRouter.jsx";
 import purchaseRouter from "./purchaseRouter.jsx";
 import customerRouter from "./customerRouter.jsx";
-import BasicLayout from "../layouts/BasicLayout.jsx";
+import oauthRouter from "./oauthRouter.jsx";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage.jsx"));
@@ -41,16 +41,16 @@ const root = createBrowserRouter([
     ),
   },
   {
+    path: "oauth",
+    children: oauthRouter(),
+  },
+
+  {
     path: "product",
     children: productRouter(),
   },
   {
     path: "customer",
-    element: (
-      <Suspense fallback={Loading}>
-        <CustomerProfile />
-      </Suspense>
-    ),
     children: customerRouter(),
   },
   {

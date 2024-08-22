@@ -5,6 +5,10 @@ const CustomerProfile = lazy(() =>
   import("../pages/customer/CustomerProfilePage")
 );
 
+const PasswordChange = lazy(() =>
+  import("../pages/customer/passwordModifyPage")
+);
+
 const customerRouter = () => {
   return [
     {
@@ -12,6 +16,14 @@ const customerRouter = () => {
       element: (
         <Suspense fallback={Loading}>
           <CustomerProfile />
+        </Suspense>
+      ),
+    },
+    {
+      path: "modify",
+      element: (
+        <Suspense fallback={Loading}>
+          <PasswordChange />
         </Suspense>
       ),
     },
