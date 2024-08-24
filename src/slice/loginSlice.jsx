@@ -27,6 +27,7 @@ const loginSlice = createSlice({
     login: (state, action) => {
       console.log("login..");
       const data = action.payload;
+      //쿠키에는 문자열만 들어갈 수 있기때문에
       setCookie("userInfo", JSON.stringify(data), 1);
       return data;
     },

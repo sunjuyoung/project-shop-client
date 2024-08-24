@@ -71,10 +71,9 @@ const Header = () => {
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(null);
 
-  const { isLogin, loginState } = useCustomLogin();
+  const { isLogin, loginState, doLogout, moveToPath } = useCustomLogin();
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
   const handleMenu = (event) => {
     if (loginState.email === "") {
@@ -112,8 +111,9 @@ const Header = () => {
 
   const handleLogout = () => {
     setAnchorEl(null);
-    dispatch(logout());
-    navigate("/login");
+    doLogout();
+    alert("로그아웃 되었습니다.");
+    moveToPath("/");
   };
   const handleProfileMenu = () => {
     setAnchorEl(null);

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getCookie } from "./cookieUtil";
+import { getCookie, setCookie } from "./cookieUtil";
 import { API_SERVER_HOST } from "../api/rootApi";
 
 const jwtAxios = axios.create();
@@ -35,16 +35,34 @@ const requestFail = (error) => {
   return Promise.reject(error);
 };
 
-const responseFail = (error) => {
+const responseFail = async (error) => {
   console.log("responseFail");
+  console.log(error);
+  if (error.response.data.code == "TOKEN-001") {
+    const userInfo = getCookie("userInfo");
+    const result = await refreshJWT(
+      userInfo.accessToken,
+      userInfo.refreshToken
+    );
+    userInfo.accessToken = result.accessToken;
+    userInfo.refreshToken = result.refreshToken;
+    setCookie("userInfo", JSON.stringify(userInfo), 1);
+
+    //원래의 호출
+    const originRequest = error.config;
+    originRequest.headers.Authorization = `Bearer ${userInfo.accessToken}`;
+    const result2 = await axios(originRequest);
+    return result2;
+  }
   return Promise.reject(error);
 };
 const beforeRes = async (response) => {
   console.log("beforeRes");
+  //console.log(response);
 
   const data = response.data;
 
-  console.log(data);
+  //console.log(data);
 
   return response;
 };

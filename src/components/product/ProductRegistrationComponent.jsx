@@ -1,5 +1,5 @@
 // src/components/ProductRegistrationComponent.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   TextField,
@@ -20,6 +20,9 @@ import {
 } from "@mui/material";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { styled } from "@mui/system";
+import { postAdd } from "../../api/productApi";
+import FetchingModal from "../common/FetchingModal";
+import ResultModal from "../common/ResultModal";
 
 const theme = createTheme();
 
@@ -47,7 +50,7 @@ const StyledAvatar = styled(Box)(({ theme }) => ({
 }));
 
 const ProductRegistrationComponent = () => {
-  const [formData, setFormData] = useState({
+  const [product, setProduct] = useState({
     name: "",
     description: "",
     price: "",
@@ -55,42 +58,74 @@ const ProductRegistrationComponent = () => {
     categoryId: "",
     files: [],
   });
+  const [fetching, setFetching] = useState(false);
   const [previews, setPreviews] = useState([]);
+  const [result, setResult] = useState(null);
+  const uploadRef = useRef();
 
-  
   useEffect(() => {
     // 파일이 변경될 때마다 미리보기 생성
-    const objectUrls = formData.files.map((file) => URL.createObjectURL(file));
+    const objectUrls = product.files.map((file) => URL.createObjectURL(file));
     setPreviews(objectUrls);
 
     // 컴포넌트가 언마운트되면 URL 객체 해제
     return () => objectUrls.forEach((url) => URL.revokeObjectURL(url));
-  }, [formData.files]);
+  }, [product.files]);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleChange = (e) => {
+    // const { name, value } = event.target;
+    // setFormData((prev) => ({
+    //   ...prev,
+    //   [name]: value,
+    // }));
+    product[e.target.name] = e.target.value;
+    setProduct({ ...product });
   };
 
   const handleFileChange = (event) => {
-    setFormData((prev) => ({
+    setProduct((prev) => ({
       ...prev,
       files: Array.from(event.target.files),
     }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(formData);
-    // 여기에 상품 등록 API 호출 로직을 추가하세요
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const files = uploadRef.current.files;
+
+    //   const files = product.files;
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      formData.append("files", files[i]);
+    }
+
+    formData.append("name", product.name);
+    formData.append("description", product.description);
+    formData.append("price", product.price);
+    formData.append("stockQuantity", product.stockQuantity);
+    formData.append("categoryId", product.categoryId);
+
+    postAdd(formData);
   };
 
+  const closeModal = () => {
+    setResult(null);
+  };
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="md">
+        {result ? (
+          <ResultModal
+            title="상품 등록"
+            content={result.content}
+            callbackFn={closeModal}
+          />
+        ) : (
+          <></>
+        )}
+
         <CssBaseline />
         <StyledPaper elevation={6}>
           <StyledAvatar>
@@ -114,7 +149,7 @@ const ProductRegistrationComponent = () => {
                   id="name"
                   label="상품명"
                   name="name"
-                  value={formData.name}
+                  value={product.name}
                   onChange={handleChange}
                 />
               </Grid>
@@ -127,7 +162,7 @@ const ProductRegistrationComponent = () => {
                   name="description"
                   multiline
                   rows={4}
-                  value={formData.description}
+                  value={product.description}
                   onChange={handleChange}
                 />
               </Grid>
@@ -139,7 +174,7 @@ const ProductRegistrationComponent = () => {
                   label="가격"
                   name="price"
                   type="number"
-                  value={formData.price}
+                  value={product.price}
                   onChange={handleChange}
                 />
               </Grid>
@@ -151,7 +186,7 @@ const ProductRegistrationComponent = () => {
                   label="재고 수량"
                   name="stockQuantity"
                   type="number"
-                  value={formData.stockQuantity}
+                  value={product.stockQuantity}
                   onChange={handleChange}
                 />
               </Grid>
@@ -162,13 +197,13 @@ const ProductRegistrationComponent = () => {
                     labelId="category-label"
                     id="categoryId"
                     name="categoryId"
-                    value={formData.categoryId}
+                    value={product.categoryId}
                     onChange={handleChange}
                     label="카테고리"
                   >
-                    <MenuItem value={1}>카테고리 1</MenuItem>
-                    <MenuItem value={2}>카테고리 2</MenuItem>
-                    <MenuItem value={3}>카테고리 3</MenuItem>
+                    <MenuItem value={14}>카테고리 1</MenuItem>
+                    <MenuItem value={15}>카테고리 2</MenuItem>
+                    <MenuItem value={16}>카테고리 3</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -177,6 +212,7 @@ const ProductRegistrationComponent = () => {
                   accept="image/*"
                   style={{ display: "none" }}
                   id="raised-button-file"
+                  ref={uploadRef}
                   multiple
                   type="file"
                   onChange={handleFileChange}
@@ -187,8 +223,8 @@ const ProductRegistrationComponent = () => {
                   </Button>
                 </label>
                 <Typography variant="caption" display="block" gutterBottom>
-                  {formData.files.length > 0
-                    ? `${formData.files.length}개의 파일이 선택됨`
+                  {product.files.length > 0
+                    ? `${product.files.length}개의 파일이 선택됨`
                     : "파일을 선택하세요"}
                 </Typography>
               </Grid>
