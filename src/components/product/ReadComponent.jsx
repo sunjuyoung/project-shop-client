@@ -1,17 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
 import BalanceIcon from "@mui/icons-material/Balance";
 import { useNavigate } from "react-router-dom";
 import useCartStore from "../../store/useCartStore";
+import { getProduct } from "../../api/productApi";
 
-const ReadComponent = () => {
+const initState = {
+  id: 1,
+  name: "",
+  productImages: [],
+  price: 0,
+  description: "",
+  stockQuantity: 0,
+  categoryName: "",
+};
+
+const ReadComponent = ({ id }) => {
+  const [product, setProduct] = useState(initState);
+  const [fetching, setFetching] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedImg, setSelectedImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
   const addToCart = useCartStore((state) => state.addToCart);
+
+  useEffect(() => {
+    setFetching(true);
+
+    getProduct(id).then((res) => {
+      console.log(res);
+      setProduct(res);
+      setFetching(false);
+    });
+  }, [id]);
 
   const data = {
     id: 1,
@@ -23,10 +46,6 @@ const ReadComponent = () => {
     isNew: true,
     per: 10,
   };
-  const images = [
-    "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    "https://images.pexels.com/photos/1163194/pexels-photo-1163194.jpeg?auto=compress&cs=tinysrgb&w=1600",
-  ];
 
   const handleAddCart = () => {
     addToCart({
@@ -42,28 +61,28 @@ const ReadComponent = () => {
   return (
     <div className="flex gap-12 px-12 py-5 product">
       <div className="flex flex-1 gap-5 left">
-        <div className="flex-1 images">
-          {images.map((img, index) => (
+        {/* <div className="flex-1 images">
+          {product.productImages.map((img, index) => (
             <img
               key={index}
-              src={img}
+              src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${img.fileName}`}
               alt=""
               onClick={() => setSelectedImg(index)}
               className="w-full h-36 object-cover cursor-pointer mb-2.5"
             />
           ))}
-        </div>
+        </div> */}
         <div className="mainImg flex-5">
           <img
-            src={images[selectedImg]}
+            src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${product.productImages[selectedImg].fileName}`}
             alt=""
             className="object-cover w-full max-h-200"
           />
           <div className="flex gap-2 mt-4 thumbnails">
-            {images.map((img, index) => (
+            {product.productImages.map((img, index) => (
               <img
                 key={index}
-                src={img}
+                src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${img.fileName}`}
                 alt=""
                 onClick={() => setSelectedImg(index)}
                 className={`w-20 h-20 object-cover cursor-pointer ${
@@ -75,7 +94,7 @@ const ReadComponent = () => {
         </div>
       </div>
       <div className="right flex-1 flex flex-col gap-7.5">
-        <h1>터틀넥티셔츠</h1>
+        <h1>{product.name}</h1>
         <hr />
 
         <div className="pCode_rCount text-base font-medium flex gap-2.5">
@@ -85,7 +104,7 @@ const ReadComponent = () => {
         </div>
         <div className="price text-base font-medium flex gap-2.5">
           <span>판매가격 :</span>
-          <span className="price">1000</span>
+          <span className="price">{product.price}</span>
         </div>
 
         <p>{data?.attributes?.desc}</p>

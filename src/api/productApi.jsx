@@ -6,6 +6,7 @@ import { API_SERVER_HOST } from "./rootApi";
 const host = `${API_SERVER_HOST}/products`;
 
 export const getProduct = async (productId) => {
+  console.log(productId);
   const res = await axios.get(`${host}/${productId}`);
   return res.data;
 };
