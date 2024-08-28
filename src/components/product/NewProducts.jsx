@@ -1,8 +1,34 @@
-import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, { useEffect, useState } from "react";
+import { getNewProducts } from "../../api/productApi";
+import FetchingModal from "../common/FetchingModal";
 
 const NewProducts = () => {
   const [startIndex, setStartIndex] = useState(0);
   const itemsPerPage = 4;
+
+  const [newProduct, setNewProduct] = useState([]);
+
+  const { data, isFetching, isSuccess, isError, error } = useQuery({
+    queryKey: ["newProduct"],
+    queryFn: () => getNewProducts(),
+    staleTime: 1000 * 60,
+  });
+
+  if (isError) {
+    console.log(error);
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      setNewProduct(data);
+    }
+  }, [isSuccess, setNewProduct, data]);
+
+  if (isFetching) {
+    return <FetchingModal />;
+  }
+
   const newItems = [
     {
       id: 1,
@@ -73,11 +99,11 @@ const NewProducts = () => {
 
   const handleNext = () => {
     setStartIndex((prevIndex) =>
-      Math.min(newItems.length - itemsPerPage, prevIndex + 1)
+      Math.min(newProduct.length - itemsPerPage, prevIndex + 1)
     );
   };
 
-  const visibleItems = newItems.slice(startIndex, startIndex + itemsPerPage);
+  const visibleItems = newProduct.slice(startIndex, startIndex + itemsPerPage);
 
   return (
     <section className="relative mb-12">
@@ -112,12 +138,12 @@ const NewProducts = () => {
               className="w-64 overflow-hidden transition-transform duration-300 bg-white rounded-lg shadow-md hover:scale-105"
             >
               <img
-                src={item.img}
-                alt={item.title}
+                src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${item.mainImage[0]}`}
+                alt={item.name}
                 className="object-cover w-full h-48"
               />
               <div className="p-4">
-                <h3 className="mb-2 text-lg font-semibold">{item.title}</h3>
+                <h3 className="mb-2 text-lg font-semibold">{item.name}</h3>
                 <p className="text-gray-600">{item.price}원</p>
                 <div className="mt-2">
                   <span className="px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full">

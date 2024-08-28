@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getProducts } from "../../api/productApi";
 import useCustomMove from "../../hooks/useCustomMove";
 import FetchingModal from "../common/FetchingModal";
+import { useQuery } from "@tanstack/react-query";
 
 const initState = {
   content: [],
@@ -15,26 +16,34 @@ const initState = {
 };
 const MDRecommendations = () => {
   const { moveToList, page, size, moveToRead } = useCustomMove();
-
-  const [mdData, setMdData] = useState(initState);
-  const [fetching, setFetching] = useState(false);
-  useEffect(() => {
-    getProducts({ page, size }).then((data) => {
-      setFetching(true);
-      setMdData(data);
-      setFetching(false);
-    });
-  }, [page, size]);
   const navigate = useNavigate();
+
+  const {
+    data: mdData,
+    isFetching,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["products/mdList", { page, size }],
+    queryFn: () => getProducts({ page, size }),
+    staleTime: 1000 * 60,
+  });
+
+  if (isFetching) {
+    return <FetchingModal />;
+  }
+  if (isError) {
+    console.log(error);
+  }
 
   const handleClick = (productId) => {
     console.log(productId);
     navigate(`/product/${productId}`);
   };
+  console.log(mdData);
 
   return (
     <section className="mb-12">
-      {fetching ? <FetchingModal /> : <></>}
       <h2 className="mb-4 text-2xl font-semibold text-gray-800">
         MD 추천 아이템
       </h2>
@@ -47,7 +56,7 @@ const MDRecommendations = () => {
           >
             <div className="bg-white">
               <img
-                src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${item.mainImage}`}
+                src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${item.mainImage[0]}`}
                 alt={item.title}
                 className="object-contain w-full h-56"
               />

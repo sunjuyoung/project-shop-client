@@ -1,56 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import StarRating from "../ui/StarRating";
+import { useQuery } from "@tanstack/react-query";
+import { getTrendProducts } from "../../api/productApi";
+import FetchingModal from "../common/FetchingModal";
 
 const TrendingItems = () => {
-  const trendingItems = [
-    {
-      id: 1,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      img2: "https://images.pexels.com/photos/1163194/pexels-photo-1163194.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "inner",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-    },
-    {
-      id: 2,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      img2: "https://images.pexels.com/photos/1163194/pexels-photo-1163194.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "outer",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-    },
-    {
-      id: 3,
-      img: "https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "bottom",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-    },
-    {
-      id: 4,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "etc",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-      isNew: true,
-    },
-    {
-      id: 5,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "etc",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-      isNew: true,
-    },
-  ];
+  const [trendProduct, setTrendProduct] = useState([]);
+
+  const { data, isFetching, isSuccess, isError, error } = useQuery({
+    queryKey: ["trendProduct"],
+    queryFn: () => getTrendProducts(),
+    staleTime: 1000 * 60,
+  });
+
+  if (isError) {
+    console.log(error);
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      setTrendProduct(data);
+    }
+  }, [isSuccess, setTrendProduct, data]);
+
+  if (isFetching) {
+    return <FetchingModal />;
+  }
+
   const settings = {
     dots: true,
     infinite: true,
@@ -79,21 +58,21 @@ const TrendingItems = () => {
         실시간 급상승 아이템
       </h2>
       <Slider {...settings}>
-        {trendingItems.map((item) => (
+        {trendProduct.map((item) => (
           <div key={item.id} className="px-2">
             <div className="overflow-hidden transition-transform duration-300 bg-white rounded-lg shadow-lg hover:scale-105">
               <img
-                src={item.img}
-                alt={item.title}
+                src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${item.mainImage[0]}`}
+                alt={item.name}
                 className="object-cover w-full h-48"
               />
               <div className="p-4">
                 <div className="flex items-start justify-between mb-2">
                   <h3 className="text-lg font-semibold">{item.title}</h3>
                   <div className="flex flex-col items-end">
-                    <StarRating rating={item.rating} />
+                    <StarRating rating={item.discountRate} />
                     <span className="text-xs text-gray-500">
-                      ({item.reviewCount || 0})
+                      ({item.discountRate || 0})
                     </span>
                   </div>
                 </div>

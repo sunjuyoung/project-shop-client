@@ -1,6 +1,8 @@
-import {create} from 'zustand';
+import { create } from "zustand";
 
 const useCategoryStore = create((set) => ({
-  categories: [],
-  setCategories: (categories) => set({categories}),
+  childCategories: [],
+  setChildCategories: (categories) => set({ childCategories: categories }),
 }));
+
+export default useCategoryStore;

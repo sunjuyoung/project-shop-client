@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -15,12 +15,12 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
-import { logout } from "../../slice/loginSlice";
 import useCustomLogin from "../../hooks/useCustomLogin";
+import { useQuery } from "@tanstack/react-query";
+import { getChildernCategory } from "../../api/categoryApi";
+import useCategoryStore from "../../store/useCategoryStore";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -65,6 +65,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Header = () => {
+  const { setChildCategories } = useCategoryStore();
   const [cartItemCount, setCartItemCount] = useState(1); // 예시로 0으로 초기화
   const [anchorEl, setAnchorEl] = useState(null);
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
@@ -74,6 +75,28 @@ const Header = () => {
   const { isLogin, loginState, doLogout, moveToPath } = useCustomLogin();
 
   const navigate = useNavigate();
+
+  const {
+    data: childCategory,
+    isFetching,
+    isSuccess,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["childernCategory"],
+    queryFn: () => getChildernCategory(),
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (isSuccess && childCategory) {
+      setChildCategories(childCategory);
+    }
+  }, [childCategory, isSuccess, setChildCategories]);
+
+  if (isError) {
+    console.log(error);
+  }
 
   const handleMenu = (event) => {
     if (loginState.email === "") {

@@ -7,7 +7,11 @@ const useCustomCart = () => {
   const dispatch = useDispatch();
 
   const cartTotalPrice = useMemo(() => {
-    return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const totalPrice =
+      (cartItems &&
+        cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)) ||
+      0;
+    return totalPrice;
   }, [cartItems]);
 
   const refreshCart = () => {

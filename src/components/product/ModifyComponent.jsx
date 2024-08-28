@@ -1,5 +1,4 @@
-// src/components/ProductRegistrationComponent.jsx
-import React, { useState, useEffect, useRef } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Box,
   TextField,
@@ -22,14 +21,13 @@ import {
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/system";
-import { postAdd } from "../../api/productApi";
 import FetchingModal from "../common/FetchingModal";
 import ResultModal from "../common/ResultModal";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getProduct, postModify } from "../../api/productApi";
 
 const theme = createTheme();
-
 const StyledPaper = styled(Paper)(({ theme }) => ({
   marginTop: theme.spacing(8),
   display: "flex",
@@ -52,30 +50,48 @@ const StyledAvatar = styled(Box)(({ theme }) => ({
   justifyContent: "center",
   borderRadius: "50%",
 }));
+const initState = {
+  id: 0,
+  name: "",
+  description: "",
+  price: 0,
+  stockQuantity: 0,
+  productImages: [],
+  categoryName: "",
+  categoryId: 14,
+};
 
-const ProductRegistrationComponent = () => {
-  const [product, setProduct] = useState({
-    name: "",
-    description: "",
-    price: "",
-    stockQuantity: "",
-    categoryId: "",
-    files: [],
-  });
-
+const ModifyComponent = ({ id, category }) => {
   const [previews, setPreviews] = useState([]);
+  const [product, setProduct] = useState(initState);
 
   const uploadRef = useRef();
   const navigate = useNavigate();
+  const categoryList = category;
+
+  const query = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getProduct(id),
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (query.isSuccess) {
+      setProduct(query.data);
+    }
+  }, [id, query.data, query.isSuccess]);
 
   useEffect(() => {
     // 파일이 변경될 때마다 미리보기 생성
-    const objectUrls = product.files.map((file) => URL.createObjectURL(file));
+    const objectUrls = product.productImages?.map(
+      (file) =>
+        "https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/" + file.fileName
+    );
     setPreviews(objectUrls);
 
     // 컴포넌트가 언마운트되면 URL 객체 해제
-    return () => objectUrls.forEach((url) => URL.revokeObjectURL(url));
-  }, [product.files]);
+    //return () => objectUrls.forEach((url) => URL.revokeObjectURL(url));
+  }, [product.productImages]);
 
   const handleChange = (e) => {
     // const { name, value } = event.target;
@@ -90,18 +106,16 @@ const ProductRegistrationComponent = () => {
   const handleFileChange = (event) => {
     setProduct((prev) => ({
       ...prev,
-      files: Array.from(event.target.files),
+      productImages: Array.from(event.target.files),
     }));
   };
 
   const addMutation = useMutation({
-    mutationFn: (product) => postAdd(product),
+    mutationFn: (product) => postModify(product, id),
   });
   const handleSubmit = (e) => {
     e.preventDefault();
     const files = uploadRef.current.files;
-
-    //   const files = product.files;
 
     const formData = new FormData();
 
@@ -127,26 +141,15 @@ const ProductRegistrationComponent = () => {
     navigate("/");
   };
   const handleRemoveImage = (index) => {
-    const updatedFiles = product.files.filter((_, i) => i !== index);
+    const updatedFiles = product.productImages.filter((_, i) => i !== index);
     setProduct((prev) => ({
       ...prev,
-      files: updatedFiles,
+      productImages: updatedFiles,
     }));
   };
   return (
     <ThemeProvider theme={theme}>
-      {addMutation.isPending ? <FetchingModal /> : <></>}
       <Container component="main" maxWidth="md">
-        {addMutation.isSuccess ? (
-          <ResultModal
-            title="상품 등록"
-            content={addMutation.data}
-            callbackFn={closeModal}
-          />
-        ) : (
-          <></>
-        )}
-
         <CssBaseline />
         <StyledPaper elevation={6}>
           <StyledAvatar>
@@ -222,9 +225,14 @@ const ProductRegistrationComponent = () => {
                     onChange={handleChange}
                     label="카테고리"
                   >
-                    <MenuItem value={14}>카테고리 1</MenuItem>
-                    <MenuItem value={15}>카테고리 2</MenuItem>
-                    <MenuItem value={16}>카테고리 3</MenuItem>
+                    <MenuItem value="">
+                      <em>카테고리 선택</em>
+                    </MenuItem>
+                    {categoryList.map((category) => (
+                      <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </Grid>
@@ -244,8 +252,8 @@ const ProductRegistrationComponent = () => {
                   </Button>
                 </label>
                 <Typography variant="caption" display="block" gutterBottom>
-                  {product.files.length > 0
-                    ? `${product.files.length}개의 파일이 선택됨`
+                  {product.productImages?.length > 0
+                    ? `${product.productImages?.length}개의 파일이 선택됨`
                     : "파일을 선택하세요"}
                 </Typography>
               </Grid>
@@ -303,4 +311,4 @@ const ProductRegistrationComponent = () => {
   );
 };
 
-export default ProductRegistrationComponent;
+export default ModifyComponent;

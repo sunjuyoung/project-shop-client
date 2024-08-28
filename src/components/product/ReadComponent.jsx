@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import BalanceIcon from "@mui/icons-material/Balance";
 import { useNavigate } from "react-router-dom";
-import useCartStore from "../../store/useCartStore";
 import { getProduct } from "../../api/productApi";
+import FetchingModal from "../common/FetchingModal";
+import useCustomCart from "../../hooks/useCustomCart";
+import useCustomLogin from "../../hooks/useCustomLogin";
+import { useQuery } from "@tanstack/react-query";
 
 const initState = {
-  id: 1,
+  id: 0,
   name: "",
   productImages: [],
   price: 0,
@@ -18,29 +19,30 @@ const initState = {
 };
 
 const ReadComponent = ({ id }) => {
-  const [product, setProduct] = useState(initState);
-  const [fetching, setFetching] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedImg, setSelectedImg] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const navigate = useNavigate();
-  const addToCart = useCartStore((state) => state.addToCart);
+  const { changeCart, cartItems } = useCustomCart();
+  const { loginState, isLogin } = useCustomLogin();
 
-  useEffect(() => {
-    setFetching(true);
+  const {
+    data: product,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["product", id],
+    queryFn: () => getProduct(id),
+    staleTime: 1000 * 10,
+  });
 
-    getProduct(id).then((res) => {
-      console.log(res);
-      setProduct(res);
-      setFetching(false);
-    });
-  }, [id]);
+  if (isFetching) {
+    return <FetchingModal />;
+  }
 
   const data = {
     id: 1,
-    img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    img2: "https://images.pexels.com/photos/1163194/pexels-photo-1163194.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    title: "inner",
+
     oldPrice: 300,
     price: 200,
     isNew: true,
@@ -48,13 +50,32 @@ const ReadComponent = ({ id }) => {
   };
 
   const handleAddCart = () => {
-    addToCart({
-      id: data.id,
-      quantity: quantity,
-      price: data.price,
-      title: data.title,
-      img: data.img,
+    if (!isLogin) {
+      navigate("/login");
+    }
+    let qty = 1;
+
+    const addedItem = cartItems.filter(
+      (item) => item.productId === parseInt(id)
+    )[0];
+
+    if (addedItem) {
+      if (
+        window.confirm("이미 장바구니에 담긴 상품입니다. 추가하시겠습니까?") ===
+        false
+      ) {
+        return;
+      }
+      qty = addedItem.quantity + 1;
+    }
+
+    changeCart({
+      productId: parseInt(id),
+      quantity: qty,
+      email: loginState.email,
+      customerId: loginState.id,
     });
+
     setOpenModal(true);
   };
 
@@ -74,7 +95,7 @@ const ReadComponent = ({ id }) => {
         </div> */}
         <div className="mainImg flex-5">
           <img
-            src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${product.productImages[selectedImg].fileName}`}
+            src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${product.productImages[selectedImg]?.fileName}`}
             alt=""
             className="object-cover w-full max-h-200"
           />
@@ -138,7 +159,7 @@ const ReadComponent = ({ id }) => {
               <div className="mb-4 text-center">상품이 카트에 담겼습니다.</div>
               <div className="flex justify-between">
                 <button
-                  onClick={() => navigate("/cart/1")}
+                  onClick={() => navigate(`/cart/${loginState.id}`)}
                   className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
                 >
                   장바구니로 이동

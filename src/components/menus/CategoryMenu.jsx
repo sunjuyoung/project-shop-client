@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -10,6 +10,8 @@ import {
   IconButton,
 } from "@mui/material";
 import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
+import { useQuery } from "@tanstack/react-query";
+import { getChildernCategory } from "../../api/categoryApi";
 
 const categories = [
   {
@@ -27,6 +29,29 @@ const categories = [
 ];
 
 const CategoryMenu = () => {
+  //getChildernCategory
+  const {
+    data: childCategory,
+    isFetching,
+    isSuccess,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["childernCategory"],
+    queryFn: getChildernCategory(),
+    staleTime: Infinity,
+  });
+
+  if (isError) {
+    console.log(error);
+  }
+
+  useEffect(() => {
+    if (isSuccess) {
+      console.log(childCategory);
+    }
+  }, [childCategory, isSuccess]);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
 

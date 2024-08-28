@@ -6,6 +6,8 @@ const RegisterProduct = lazy(() =>
   import("../pages/product/RegisterProduct.jsx")
 );
 
+const ModifyProduct = lazy(() => import("../pages/product/ModifyPage.jsx"));
+
 const productRouter = () => {
   return [
     {
@@ -21,6 +23,15 @@ const productRouter = () => {
       element: (
         <Suspense fallback={Loading}>
           <RegisterProduct />
+        </Suspense>
+      ),
+    },
+
+    {
+      path: "modify/:id",
+      element: (
+        <Suspense fallback={Loading}>
+          <ModifyProduct />
         </Suspense>
       ),
     },
