@@ -11,9 +11,11 @@ const MainPage = () => {
     <BasicLayout>
       <CategoryList />
       <Slider />
-      <NewProducts />
-      <TrendingItems />
-      <MDRecommendations />
+      <div className="p-6 mx-auto max-w-7xl">
+        <NewProducts />
+        <TrendingItems />
+        <MDRecommendations />
+      </div>
     </BasicLayout>
   );
 };

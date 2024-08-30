@@ -10,8 +10,15 @@ export const getProduct = async (productId) => {
   return res.data;
 };
 
-export const getProducts = async () => {
-  const res = await axios.get(`${host}`);
+export const getProducts = async ({ page, size, priceRange, orderBy }) => {
+  const searchParams = new URLSearchParams();
+  if (priceRange) {
+    searchParams.append("priceRange", priceRange);
+  }
+  if (orderBy) {
+    searchParams.append("orderBy", orderBy);
+  }
+  const res = await axios.get(`${host}?${searchParams.toString()}`);
   return res.data;
 };
 

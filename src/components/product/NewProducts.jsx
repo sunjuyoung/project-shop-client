@@ -29,70 +29,6 @@ const NewProducts = () => {
     return <FetchingModal />;
   }
 
-  const newItems = [
-    {
-      id: 1,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      img2: "https://images.pexels.com/photos/1163194/pexels-photo-1163194.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "inner",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-    },
-    {
-      id: 2,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      img2: "https://images.pexels.com/photos/1163194/pexels-photo-1163194.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "outer",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-    },
-    {
-      id: 3,
-      img: "https://images.pexels.com/photos/2065200/pexels-photo-2065200.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "bottom",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-    },
-    {
-      id: 4,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "etc",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-      isNew: true,
-    },
-    {
-      id: 5,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "etc",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-      isNew: true,
-    },
-    {
-      id: 6,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "etc",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-      isNew: true,
-    },
-    {
-      id: 7,
-      img: "https://images.pexels.com/photos/1972115/pexels-photo-1972115.jpeg?auto=compress&cs=tinysrgb&w=1600",
-      title: "etc",
-      oldPrice: 300,
-      price: 200,
-      per: 10,
-      isNew: true,
-    },
-  ];
   const handlePrev = () => {
     setStartIndex((prevIndex) => Math.max(0, prevIndex - 1));
   };
@@ -157,7 +93,7 @@ const NewProducts = () => {
         <button
           onClick={handleNext}
           className="absolute right-0 p-2 transform -translate-y-1/2 bg-white rounded-full shadow-md top-1/2 focus:outline-none"
-          disabled={startIndex + itemsPerPage >= newItems.length}
+          disabled={startIndex + itemsPerPage >= newProduct.length}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

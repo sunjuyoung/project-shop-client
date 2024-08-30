@@ -7,6 +7,9 @@ const RegisterProduct = lazy(() =>
 );
 
 const ModifyProduct = lazy(() => import("../pages/product/ModifyPage.jsx"));
+const SearchPorduct = lazy(() =>
+  import("../pages/product/ProductSearchPage.jsx")
+);
 
 const productRouter = () => {
   return [
@@ -32,6 +35,14 @@ const productRouter = () => {
       element: (
         <Suspense fallback={Loading}>
           <ModifyProduct />
+        </Suspense>
+      ),
+    },
+    {
+      path: "search",
+      element: (
+        <Suspense fallback={Loading}>
+          <SearchPorduct />
         </Suspense>
       ),
     },

@@ -19,8 +19,9 @@ import { useNavigate } from "react-router-dom";
 import { alpha, styled } from "@mui/material/styles";
 import useCustomLogin from "../../hooks/useCustomLogin";
 import { useQuery } from "@tanstack/react-query";
-import { getChildernCategory } from "../../api/categoryApi";
+import { getCategoryList, getChildernCategory } from "../../api/categoryApi";
 import useCategoryStore from "../../store/useCategoryStore";
+import useCustomMove from "../../hooks/useCustomMove";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -71,8 +72,11 @@ const Header = () => {
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const [isCategoryMenuOpen, setIsCategoryMenuOpen] = useState(false);
   const [openSubCategory, setOpenSubCategory] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { isLogin, loginState, doLogout, moveToPath } = useCustomLogin();
+
+  const { moveToSearch } = useCustomMove();
 
   const navigate = useNavigate();
 
@@ -83,8 +87,8 @@ const Header = () => {
     isError,
     error,
   } = useQuery({
-    queryKey: ["childernCategory"],
-    queryFn: () => getChildernCategory(),
+    queryKey: ["CategoryList"],
+    queryFn: () => getCategoryList(),
     staleTime: Infinity,
   });
 
@@ -143,6 +147,21 @@ const Header = () => {
     navigate(`/customer/${loginState.id}`);
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      if (searchTerm.trim() !== "") {
+        navigate(
+          `/product/search?keyword=${encodeURIComponent(searchTerm.trim())}`
+        );
+        //moveToSearch(searchTerm.trim());
+      }
+    }
+  };
   return (
     <AppBar
       position="static"
@@ -173,6 +192,9 @@ const Header = () => {
           <StyledInputBase
             placeholder="Search…"
             inputProps={{ "aria-label": "search" }}
+            value={searchTerm}
+            onChange={handleSearch}
+            onKeyDown={handleKeyDown}
           />
         </Search>
 

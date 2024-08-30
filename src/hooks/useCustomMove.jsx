@@ -59,7 +59,27 @@ const useCustomMove = () => {
       search: queryDefault,
     });
   };
-  return { page, size, refresh, moveToList, moveToModify, moveToRead };
+
+  //검색화면 이동
+  const moveToSearch = (keyword) => {
+    navigate(
+      {
+        pathname: `../product/search`,
+        search: createSearchParams({ keyword }).toString(),
+      },
+      { replace: true }
+    );
+  };
+
+  return {
+    page,
+    size,
+    refresh,
+    moveToList,
+    moveToModify,
+    moveToRead,
+    moveToSearch,
+  };
 };
 
 export default useCustomMove;

@@ -7,3 +7,8 @@ export const getChildernCategory = async () => {
   const res = await axios.get(`${host}/children`);
   return res.data;
 };
+
+export const getCategoryList = async () => {
+  const res = await axios.get(`${host}`);
+  return res.data;
+};
