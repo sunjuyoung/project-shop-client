@@ -2,9 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { getNewProducts } from "../../api/productApi";
 import FetchingModal from "../common/FetchingModal";
+import useCustomMove from "../../hooks/useCustomMove";
 
 const NewProducts = () => {
   const [startIndex, setStartIndex] = useState(0);
+  const { moveToList, page, size, moveToRead } = useCustomMove();
+
   const itemsPerPage = 4;
 
   const [newProduct, setNewProduct] = useState([]);
@@ -41,6 +44,10 @@ const NewProducts = () => {
 
   const visibleItems = newProduct.slice(startIndex, startIndex + itemsPerPage);
 
+  const handleClick = (id) => {
+    moveToRead(id);
+  };
+
   return (
     <section className="relative mb-12">
       <h2 className="mb-4 text-2xl font-semibold text-gray-800">
@@ -72,6 +79,7 @@ const NewProducts = () => {
             <div
               key={item.id}
               className="w-64 overflow-hidden transition-transform duration-300 bg-white rounded-lg shadow-md hover:scale-105"
+              onClick={() => handleClick(item.id)}
             >
               <img
                 src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${item.mainImage[0]}`}

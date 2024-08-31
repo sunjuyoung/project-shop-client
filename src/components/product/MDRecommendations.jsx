@@ -16,7 +16,6 @@ const initState = {
 };
 const MDRecommendations = () => {
   const { moveToList, page, size, moveToRead } = useCustomMove();
-  const navigate = useNavigate();
 
   const {
     data: mdData,
@@ -37,10 +36,8 @@ const MDRecommendations = () => {
   }
 
   const handleClick = (productId) => {
-    console.log(productId);
-    navigate(`/product/${productId}`);
+    moveToRead(productId);
   };
-  console.log(mdData);
 
   return (
     <section className="mb-12">

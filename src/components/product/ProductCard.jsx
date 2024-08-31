@@ -1,9 +1,20 @@
 import React from "react";
 import { ChevronDown, Star } from "lucide-react";
+import useCustomMove from "../../hooks/useCustomMove";
+import { useNavigate } from "react-router-dom";
 
 const ProductCard = ({ product }) => {
+  const navigate = useNavigate();
+
+  const moveToDetail = (productId) => {
+    navigate(`/product/${productId}`);
+  };
+
   return (
-    <div className="overflow-hidden bg-white rounded-lg shadow-md">
+    <div
+      className="overflow-hidden bg-white rounded-lg shadow-md"
+      onClick={() => moveToDetail(product.id)}
+    >
       <img
         src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${product.mainImage[0]}`}
         alt={product.name}

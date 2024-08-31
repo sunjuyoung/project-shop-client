@@ -6,9 +6,11 @@ import StarRating from "../ui/StarRating";
 import { useQuery } from "@tanstack/react-query";
 import { getTrendProducts } from "../../api/productApi";
 import FetchingModal from "../common/FetchingModal";
+import useCustomMove from "../../hooks/useCustomMove";
 
 const TrendingItems = () => {
   const [trendProduct, setTrendProduct] = useState([]);
+  const { moveToList, page, size, moveToRead } = useCustomMove();
 
   const { data, isFetching, isSuccess, isError, error } = useQuery({
     queryKey: ["trendProduct"],
@@ -52,6 +54,10 @@ const TrendingItems = () => {
     ],
   };
 
+  const handleClick = (productId) => {
+    moveToRead(productId);
+  };
+
   return (
     <section className="mb-12">
       <h2 className="mb-4 text-2xl font-semibold text-gray-800">
@@ -59,7 +65,11 @@ const TrendingItems = () => {
       </h2>
       <Slider {...settings}>
         {trendProduct.map((item) => (
-          <div key={item.id} className="px-2">
+          <div
+            key={item.id}
+            className="px-2"
+            onClick={() => handleClick(item.id)}
+          >
             <div className="overflow-hidden transition-transform duration-300 bg-white rounded-lg shadow-lg hover:scale-105">
               <img
                 src={`https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${item.mainImage[0]}`}

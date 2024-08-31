@@ -5,15 +5,13 @@ import cartRouter from "./cartRouter.jsx";
 import purchaseRouter from "./purchaseRouter.jsx";
 import customerRouter from "./customerRouter.jsx";
 import oauthRouter from "./oauthRouter.jsx";
+import orderRouter from "./orderRouter.jsx";
 
 const Loading = <div>Loading...</div>;
 const Main = lazy(() => import("../pages/MainPage.jsx"));
 const Login = lazy(() => import("../pages/LoginPage.jsx"));
 const CartRead = lazy(() => import("../pages/CartIndexPage.jsx"));
 const SignUp = lazy(() => import("../pages/SignUpPgae.jsx"));
-const CustomerProfile = lazy(() =>
-  import("../pages/customer/CustomerProfilePage")
-);
 
 const root = createBrowserRouter([
   {
@@ -65,6 +63,10 @@ const root = createBrowserRouter([
   {
     path: "purchase",
     children: purchaseRouter(),
+  },
+  {
+    path: "order",
+    children: orderRouter(),
   },
 ]);
 

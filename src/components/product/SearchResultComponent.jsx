@@ -24,9 +24,15 @@ const SearchResultComponent = ({ keyword }) => {
   const queryClient = useQueryClient();
 
   const { data, isFetching, isSuccess, isError, error } = useQuery({
-    queryKey: ["searchProduct", priceFilter, sortBy],
+    queryKey: ["searchProduct", priceFilter, sortBy, categoryFilter],
     queryFn: () =>
-      getProducts({ page, size, priceRange: priceFilter, orderBy: sortBy }),
+      getProducts({
+        page,
+        size,
+        priceRange: priceFilter,
+        orderBy: sortBy,
+        categoryFilter,
+      }),
     staleTime: 1000 * 60,
   });
 
@@ -50,8 +56,7 @@ const SearchResultComponent = ({ keyword }) => {
   const handleCategoryFilterChange = useCallback(
     (categories) => {
       setCategoryFilter(categories);
-      console.log(categories);
-      // queryClient.invalidateQueries(["products"]);
+      queryClient.invalidateQueries(["searchProduct"]);
     },
     [queryClient]
   );

@@ -54,17 +54,20 @@ const useCustomMove = () => {
 
   //수정화면 이동
   const moveToRead = (id) => {
-    navigate({
-      pathname: `product/${id}`,
-      search: queryDefault,
-    });
+    navigate(
+      {
+        pathname: `product/${id}`,
+        search: queryDefault,
+      },
+      { replace: true }
+    );
   };
 
   //검색화면 이동
   const moveToSearch = (keyword) => {
     navigate(
       {
-        pathname: `../product/search`,
+        pathname: `../search`,
         search: createSearchParams({ keyword }).toString(),
       },
       { replace: true }
