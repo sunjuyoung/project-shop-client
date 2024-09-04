@@ -52,7 +52,6 @@ const useCustomMove = () => {
     });
   };
 
-  //수정화면 이동
   const moveToRead = (id) => {
     navigate(
       {

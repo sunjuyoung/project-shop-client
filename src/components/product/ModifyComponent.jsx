@@ -23,7 +23,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { styled } from "@mui/system";
 import FetchingModal from "../common/FetchingModal";
 import ResultModal from "../common/ResultModal";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProduct, postModify } from "../../api/productApi";
 
@@ -228,11 +228,20 @@ const ModifyComponent = ({ id, category }) => {
                     <MenuItem value="">
                       <em>카테고리 선택</em>
                     </MenuItem>
-                    {categoryList.map((category) => (
+                    {categoryList.flatMap((category) => [
                       <MenuItem key={category.id} value={category.id}>
                         {category.name}
-                      </MenuItem>
-                    ))}
+                      </MenuItem>,
+                      ...category.subCategories.map((subCategory) => (
+                        <MenuItem
+                          key={subCategory.id}
+                          value={subCategory.id}
+                          style={{ paddingLeft: "20px" }}
+                        >
+                          └ {subCategory.name}
+                        </MenuItem>
+                      )),
+                    ])}
                   </Select>
                 </FormControl>
               </Grid>

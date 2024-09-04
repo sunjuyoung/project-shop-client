@@ -12,6 +12,11 @@ const Main = lazy(() => import("../pages/MainPage.jsx"));
 const Login = lazy(() => import("../pages/LoginPage.jsx"));
 const CartRead = lazy(() => import("../pages/CartIndexPage.jsx"));
 const SignUp = lazy(() => import("../pages/SignUpPgae.jsx"));
+const WidgetCheckout = lazy(() =>
+  import("../pages/toss/widget/WidgetCheckout.jsx")
+);
+import { SuccessPage } from "../pages/toss/widget/SuccessPage.jsx";
+import { PaymentCheckout } from "../pages/toss/PaymentCheckout.jsx";
 
 const root = createBrowserRouter([
   {
@@ -67,6 +72,27 @@ const root = createBrowserRouter([
   {
     path: "order",
     children: orderRouter(),
+  },
+  {
+    path: "checkout",
+    element: <PaymentCheckout />,
+  },
+  {
+    path: "widget",
+    children: [
+      {
+        path: "checkout",
+        element: (
+          <Suspense fallback={Loading}>
+            <WidgetCheckout />
+          </Suspense>
+        ),
+      },
+      {
+        path: "success",
+        element: <SuccessPage />,
+      },
+    ],
   },
 ]);
 
