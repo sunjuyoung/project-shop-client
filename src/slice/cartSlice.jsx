@@ -21,17 +21,43 @@ const cartSlice = createSlice({
   name: "cartSlice",
   initialState: initState,
 
+  reducers: {
+    selectCartItem(state, action) {
+      const productId = action.payload;
+      return state.map((item) =>
+        item.productId === productId
+          ? { ...item, isSelected: !item.isSelected }
+          : item
+      );
+    },
+
+    unselectCartItem(state, action) {
+      const productId = action.payload;
+      return state.map((item) =>
+        item.id === productId ? { ...item, isSelected: false } : item
+      );
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       .addCase(getCartItemAsync.fulfilled, (state, action) => {
         console.log("getCartItemAsync.fulfilled");
-        return action.payload;
+        return action.payload.map((item) => ({
+          ...item,
+          isSelected: false, // 추가된 각 상품의 초기값으로 isSelected를 false로 설정
+        }));
       })
       .addCase(changeCartAsync.fulfilled, (state, action) => {
         console.log("changeCartAsync.fulfilled");
-        return action.payload;
+        return action.payload.map((item) => ({
+          ...item,
+          isSelected: false, // 추가된 각 상품의 초기값으로 isSelected를 false로 설정
+        }));
       });
   },
 });
+
+export const { selectCartItem, unselectCartItem } = cartSlice.actions;
 
 export default cartSlice.reducer;

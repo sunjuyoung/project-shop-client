@@ -2,21 +2,21 @@ import { useState } from "react";
 
 const CartItemComponent = ({
   cartItemId,
+  productId,
   productName,
   imageUrl,
   price,
   quantity,
+  isSelected,
   email,
   userId,
   changeCart,
+  selectCartItem,
 }) => {
   const productImage = `https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${imageUrl}`;
-  const [isChecked, setIsChecked] = useState(false);
 
-  const handleCheckboxChange = () => {
-    setIsChecked(!isChecked);
-    // 여기서 체크박스 상태 변경 시 필요한 추가 작업을 수행할 수 있습니다.
-    // 예를 들어, Redux 상태를 업데이트하거나 API 호출 등을 할 수 있습니다.
+  const handleCheckboxChange = (productId) => {
+    selectCartItem(productId);
   };
 
   const handleClickQty = (amount) => {
@@ -35,8 +35,8 @@ const CartItemComponent = ({
       >
         <input
           type="checkbox"
-          checked={isChecked}
-          onChange={handleCheckboxChange}
+          checked={isSelected}
+          onChange={() => handleCheckboxChange(productId)}
           className="mr-4"
         />
         <img

@@ -8,3 +8,8 @@ export const modifyPassword = async (password) => {
   const res = await jwtAxios.put(`${host}/modify-password`, password);
   return res;
 };
+
+export const getCustomerProfile = async (userId) => {
+  const res = await jwtAxios.get(`${host}/${userId}`);
+  return res;
+};

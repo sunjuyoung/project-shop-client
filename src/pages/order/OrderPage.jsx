@@ -1,37 +1,72 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomerInfo from "../../components/order/CustomerInfo";
 import OrderSummary from "../../components/order/OrderSummary";
 import PaymentMethod from "../../components/order/PaymentMethod";
 import PaymentSummary from "../../components/order/PaymentSummary";
 import ShippingInfo from "../../components/order/ShippingInfo";
 import BasicLayout from "../../layouts/BasicLayout";
+import useCustomCart from "../../hooks/useCustomCart";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getCustomerProfile } from "../../api/customerApi";
+import useCustomLogin from "../../hooks/useCustomLogin";
+import FetchingModal from "../../components/common/FetchingModal";
+import { saveOrder } from "../../api/orderApi";
 
 const OrderPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
-
-  // 샘플 주문 데이터
-  const orderItems = [
-    {
-      id: 1,
-      name: "프리미엄 데님 진",
-      price: 89000,
-      quantity: 2,
-      image: "/api/placeholder/80/80",
-    },
-    {
-      id: 2,
-      name: "캐주얼 티셔츠",
-      price: 29000,
-      quantity: 1,
-      image: "/api/placeholder/80/80",
-    },
-  ];
-
-  const subtotal = orderItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  );
+  const [customerInfo, setCustomerInfo] = useState(null);
+  const { cartItems, selectCartItemHandle, selectedCartTotalPrice } =
+    useCustomCart();
+  const orderItems = cartItems.filter((item) => item.isSelected === true);
   const shippingFee = 3000;
+  const { loginState } = useCustomLogin();
+
+  const addMutation = useMutation({
+    mutationFn: (data) => saveOrder(data),
+  });
+
+  const {
+    data: customerProfile,
+    isFetching,
+    isSuccess,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["customerProfile", loginState.id],
+    queryFn: () => getCustomerProfile(loginState.id),
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      setCustomerInfo(customerProfile.data);
+    }
+  }, [isSuccess, setCustomerInfo, customerProfile.data]);
+
+  if (isFetching) {
+    return <FetchingModal />;
+  }
+  if (isError) {
+    console.log(error);
+  }
+
+  const handlePayment = () => {
+    console.log(customerInfo);
+    console.log(orderItems);
+    addMutation.mutate({
+      customerId: customerInfo.id,
+      orderItemDTOS: orderItems,
+      receiverName: customerInfo.receiverName,
+      receiverPhone: customerInfo.receiverPhone,
+      city: customerInfo.city,
+      street: customerInfo.street,
+      postCode: "123-456",
+    });
+  };
+
+  if (addMutation.isSuccess) {
+    console.log(addMutation.data);
+  }
 
   return (
     <BasicLayout>
@@ -40,15 +75,25 @@ const OrderPage = () => {
         <div className="flex flex-col gap-8 lg:flex-row">
           <div className="lg:w-2/3">
             <OrderSummary orderItems={orderItems} />
-            <CustomerInfo />
-            <ShippingInfo />
+            <CustomerInfo
+              customerInfo={customerInfo}
+              setCustomerInfo={setCustomerInfo}
+            />
+            <ShippingInfo
+              customerInfo={customerInfo}
+              setCustomerInfo={setCustomerInfo}
+            />
             <PaymentMethod
               paymentMethod={paymentMethod}
               setPaymentMethod={setPaymentMethod}
             />
           </div>
           <div className="lg:w-1/3">
-            <PaymentSummary subtotal={subtotal} shippingFee={shippingFee} />
+            <PaymentSummary
+              subtotal={selectedCartTotalPrice}
+              shippingFee={shippingFee}
+              onClick={handlePayment}
+            />
           </div>
         </div>
       </div>

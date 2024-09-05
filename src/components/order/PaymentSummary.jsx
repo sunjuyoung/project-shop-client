@@ -1,4 +1,4 @@
-const PaymentSummary = ({ subtotal, shippingFee }) => {
+const PaymentSummary = ({ subtotal, shippingFee, onClick }) => {
   const total = subtotal + shippingFee;
 
   return (
@@ -18,7 +18,10 @@ const PaymentSummary = ({ subtotal, shippingFee }) => {
           <span>{total.toLocaleString()}원</span>
         </div>
       </div>
-      <button className="w-full py-3 font-semibold text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700">
+      <button
+        className="w-full py-3 font-semibold text-white transition duration-300 bg-blue-600 rounded-md hover:bg-blue-700"
+        onClick={onClick}
+      >
         결제하기
       </button>
     </div>
