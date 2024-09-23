@@ -11,6 +11,7 @@ import { getCustomerProfile } from "../../api/customerApi";
 import useCustomLogin from "../../hooks/useCustomLogin";
 import FetchingModal from "../../components/common/FetchingModal";
 import { saveOrder } from "../../api/orderApi";
+import { useNavigate } from "react-router-dom";
 
 const OrderPage = () => {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -20,9 +21,17 @@ const OrderPage = () => {
   const orderItems = cartItems.filter((item) => item.isSelected === true);
   const shippingFee = 3000;
   const { loginState } = useCustomLogin();
+  const navigate = useNavigate();
 
   const addMutation = useMutation({
     mutationFn: (data) => saveOrder(data),
+
+    onSuccess: (res) => {
+      console.log(res);
+      navigate(
+        `/widget/checkout?data=${encodeURIComponent(JSON.stringify(res.data))}`
+      );
+    },
   });
 
   const {
@@ -41,7 +50,7 @@ const OrderPage = () => {
     if (isSuccess) {
       setCustomerInfo(customerProfile.data);
     }
-  }, [isSuccess, setCustomerInfo, customerProfile.data]);
+  }, [isSuccess, setCustomerInfo, customerProfile]);
 
   if (isFetching) {
     return <FetchingModal />;
@@ -51,8 +60,8 @@ const OrderPage = () => {
   }
 
   const handlePayment = () => {
-    console.log(customerInfo);
-    console.log(orderItems);
+    // console.log(customerInfo);
+    // console.log(orderItems);
     addMutation.mutate({
       customerId: customerInfo.id,
       orderItemDTOS: orderItems,
@@ -60,13 +69,9 @@ const OrderPage = () => {
       receiverPhone: customerInfo.receiverPhone,
       city: customerInfo.city,
       street: customerInfo.street,
-      postCode: "123-456",
+      postCode: customerInfo.postCode,
     });
   };
-
-  if (addMutation.isSuccess) {
-    console.log(addMutation.data);
-  }
 
   return (
     <BasicLayout>

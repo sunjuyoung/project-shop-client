@@ -1,7 +1,10 @@
 import { loadTossPayments, ANONYMOUS } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../../../App.css";
+import { useQuery } from "@tanstack/react-query";
+import { checkout } from "../../../api/paymentApi";
+import FetchingModal from "../../../components/common/FetchingModal";
 
 const generateRandomString = () => {
   return window.btoa(Math.random().toString()).slice(0, 20);
@@ -16,13 +19,28 @@ const customerKey = generateRandomString();
 
 const WidgetCheckout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const orderData = JSON.parse(decodeURIComponent(searchParams.get("data")));
 
   const [amount, setAmount] = useState({
     currency: "KRW",
-    value: 50000,
+    value: orderData.amount,
   });
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState(null);
+
+  const {
+    data: checkoutResult,
+    isFetching,
+    isSuccess,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["checkout"],
+    queryFn: () => checkout(orderData),
+    staleTime: Infinity,
+  });
 
   useEffect(() => {
     async function fetchPaymentWidgets() {
@@ -82,6 +100,14 @@ const WidgetCheckout = () => {
     renderPaymentWidgets();
   }, [widgets]);
 
+  if (isFetching) {
+    return <FetchingModal />;
+  }
+  if (isError) {
+    console.log(error);
+  }
+  console.log(checkoutResult);
+
   return (
     <div className="wrapper">
       <div className="box_section">
@@ -137,8 +163,8 @@ const WidgetCheckout = () => {
               // 결제를 요청하기 전에 orderId, amount를 서버에 저장하세요.
               // 결제 과정에서 악의적으로 결제 금액이 바뀌는 것을 확인하는 용도입니다.
               await widgets.requestPayment({
-                orderId: generateRandomString(), // 고유 주문 번호
-                orderName: "토스 티셔츠 외 2건",
+                orderId: orderData.orderId + "_testNumber", // 고유 주문 번호
+                orderName: orderData.orderName,
                 successUrl: window.location.origin + "/widget/success", // 결제 요청이 성공하면 리다이렉트되는 URL
                 failUrl: window.location.origin + "/fail", // 결제 요청이 실패하면 리다이렉트되는 URL
                 customerEmail: "customer123@gmail.com",

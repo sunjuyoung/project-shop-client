@@ -9,7 +9,7 @@ const CustomerInfo = ({ customerInfo, setCustomerInfo }) => (
         <input
           type="text"
           className="w-full px-3 py-2 border rounded-md"
-          value={customerInfo?.nickname}
+          value={customerInfo?.nickname || ""}
           onChange={(e) =>
             setCustomerInfo({ ...customerInfo, nickname: e.target.value })
           }
@@ -22,7 +22,7 @@ const CustomerInfo = ({ customerInfo, setCustomerInfo }) => (
         <input
           type="tel"
           className="w-full px-3 py-2 border rounded-md"
-          value={customerInfo?.phoneNumber}
+          value={customerInfo?.phoneNumber || ""}
           onChange={(e) =>
             setCustomerInfo({ ...customerInfo, phoneNumber: e.target.value })
           }

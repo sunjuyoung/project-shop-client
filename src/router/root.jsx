@@ -17,6 +17,7 @@ const WidgetCheckout = lazy(() =>
 );
 import { SuccessPage } from "../pages/toss/widget/SuccessPage.jsx";
 import { PaymentCheckout } from "../pages/toss/PaymentCheckout.jsx";
+import { FailPage } from "../pages/toss/widget/FailPage.jsx";
 
 const root = createBrowserRouter([
   {
@@ -93,6 +94,11 @@ const root = createBrowserRouter([
         element: <SuccessPage />,
       },
     ],
+  },
+
+  {
+    path: "fail",
+    element: <FailPage />,
   },
 ]);
 

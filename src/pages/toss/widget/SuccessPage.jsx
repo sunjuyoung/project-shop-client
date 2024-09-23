@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { API_SERVER_HOST } from "../../../api/rootApi";
+import axios from "axios";
 
 export function SuccessPage() {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ export function SuccessPage() {
         paymentKey: searchParams.get("paymentKey"),
       };
 
-      const response = await fetch("/api/confirm/widget", {
+      const response = await fetch(`${API_SERVER_HOST}/payments/confirm`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,6 +24,7 @@ export function SuccessPage() {
         body: JSON.stringify(requestData),
       });
 
+      console.log(response);
       const json = await response.json();
 
       if (!response.ok) {
@@ -36,6 +39,7 @@ export function SuccessPage() {
         setResponseData(data);
       })
       .catch((error) => {
+        console.log(error);
         navigate(`/fail?code=${error.code}&message=${error.message}`);
       });
   }, [searchParams]);
