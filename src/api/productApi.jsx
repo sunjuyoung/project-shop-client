@@ -16,6 +16,7 @@ export const getProducts = async ({
   priceRange,
   orderBy,
   categoryFilter,
+  keyword,
 }) => {
   const searchParams = new URLSearchParams();
   if (priceRange) {
@@ -28,6 +29,9 @@ export const getProducts = async ({
     console.log(categoryFilter);
     searchParams.append("categoryId", categoryFilter);
   }
+
+  searchParams.append("keyword", keyword);
+
   const res = await axios.get(`${host}?${searchParams.toString()}`);
   return res.data;
 };

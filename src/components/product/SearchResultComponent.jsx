@@ -23,8 +23,9 @@ const SearchResultComponent = ({ keyword }) => {
   const { moveToList, page, size, moveToRead } = useCustomMove();
   const queryClient = useQueryClient();
 
+  console.log(keyword);
   const { data, isFetching, isSuccess, isError, error } = useQuery({
-    queryKey: ["searchProduct", priceFilter, sortBy, categoryFilter],
+    queryKey: ["searchProduct", priceFilter, sortBy, categoryFilter, keyword],
     queryFn: () =>
       getProducts({
         page,
@@ -32,6 +33,7 @@ const SearchResultComponent = ({ keyword }) => {
         priceRange: priceFilter,
         orderBy: sortBy,
         categoryFilter,
+        keyword: keyword,
       }),
     staleTime: 1000 * 60,
   });

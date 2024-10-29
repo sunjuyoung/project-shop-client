@@ -53,13 +53,10 @@ const useCustomMove = () => {
   };
 
   const moveToRead = (id) => {
-    navigate(
-      {
-        pathname: `product/${id}`,
-        search: queryDefault,
-      },
-      { replace: true }
-    );
+    navigate({
+      pathname: `product/${id}`,
+      search: queryDefault,
+    });
   };
 
   //검색화면 이동

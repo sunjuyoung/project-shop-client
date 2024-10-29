@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 const CartItemComponent = ({
   cartItemId,
   productId,
@@ -15,7 +13,7 @@ const CartItemComponent = ({
 }) => {
   const productImage = `https://shop-syseoz.s3.ap-northeast-2.amazonaws.com/${imageUrl}`;
 
-  const handleCheckboxChange = (productId) => {
+  const handleCheckboxChange = () => {
     selectCartItem(productId);
   };
 
@@ -27,46 +25,58 @@ const CartItemComponent = ({
       customerId: userId,
     });
   };
+
+  const totalPrice = price * quantity;
+
   return (
-    <div>
-      <div
-        key={cartItemId}
-        className="flex items-center p-4 bg-white rounded-lg shadow"
-      >
-        <input
-          type="checkbox"
-          checked={isSelected}
-          onChange={() => handleCheckboxChange(productId)}
-          className="mr-4"
-        />
+    <div key={cartItemId} className="flex items-center px-4 py-2 border-b">
+      {/* 체크박스 */}
+      <input
+        type="checkbox"
+        checked={isSelected}
+        onChange={handleCheckboxChange}
+        className="mr-4"
+      />
+
+      {/* 상품정보 */}
+      <div className="flex items-center w-1/3">
         <img
           src={productImage}
           alt={productName}
-          className="object-cover w-24 h-24 mr-6"
+          className="object-cover w-16 h-16 mr-4"
         />
-        <div className="flex-grow">
-          <h3 className="text-lg font-semibold">{productName}</h3>
-          <p className="text-gray-600">{price}원</p>
-          <p className="text-sm text-gray-500">배송비: {price}원</p>
+        <div>
+          <h3 className="text-base font-semibold">{productName}</h3>
         </div>
-        <div className="flex items-center mx-4">
-          <button
-            className="px-2 py-1 bg-gray-200 rounded"
-            onClick={() => handleClickQty(-1)}
-          >
-            -
-          </button>
-          <span className="mx-2">{quantity}</span>
-          <button
-            className="px-2 py-1 bg-gray-200 rounded"
-            onClick={() => handleClickQty(1)}
-          >
-            +
-          </button>
-        </div>
-        <button className="px-2 py-1 text-white transition duration-300 bg-red-500 rounded hover:bg-red-600">
-          X
+      </div>
+
+      {/* 수량 */}
+      <div className="flex items-center justify-center w-1/6">
+        <button
+          className="px-2 py-1 bg-gray-200 rounded"
+          onClick={() => handleClickQty(-1)}
+          disabled={quantity <= 1}
+        >
+          -
         </button>
+        <span className="mx-2">{quantity}</span>
+        <button
+          className="px-2 py-1 bg-gray-200 rounded"
+          onClick={() => handleClickQty(1)}
+        >
+          +
+        </button>
+      </div>
+
+      {/* 상품금액 */}
+      <div className="w-1/6 text-center">{price.toLocaleString()}원</div>
+
+      {/* 합계금액 */}
+      <div className="w-1/6 text-center">{totalPrice.toLocaleString()}원</div>
+
+      {/* 배송비 */}
+      <div className="w-1/6 text-center">
+        {price >= 50000 ? "무료" : "3,000원"}
       </div>
     </div>
   );

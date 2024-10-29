@@ -1,5 +1,4 @@
-// src/components/SignupComponent.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -10,14 +9,12 @@ import {
   Link,
   Grid,
   Paper,
-  IconButton,
   ThemeProvider,
   createTheme,
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import GoogleIcon from "@mui/icons-material/Google";
 import { styled } from "@mui/system";
 
 const theme = createTheme();
@@ -68,7 +65,7 @@ const SignupComponent = () => {
     console.log(formData);
   };
 
-  const handleGoogleSignup = () => {
+  const handleSocialSignup = () => {
     console.log("Google 회원가입 시도");
   };
 
@@ -174,74 +171,80 @@ const SignupComponent = () => {
             >
               가입하기
             </Button>
-            <div className="flex-row items-center justify-center">
-              <IconButton
-                onClick={handleGoogleSignup}
-                sx={{
-                  mt: 1,
-                  mb: 1,
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  py: 1,
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                  },
-                }}
-              >
-                <img
-                  src="/img/btn_naver.png"
-                  style={{ width: "25px", margin: "4px" }}
-                />
-                <Typography style={{ fontWeight: "bold" }} variant="button">
+            {/* 소셜 로그인 버튼들 */}
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body1" align="center" gutterBottom>
+                또는 소셜 계정으로 가입하기
+              </Typography>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={
+                    <img
+                      src="/img/btn_naver.png"
+                      alt="Naver"
+                      style={{ width: "24px" }}
+                    />
+                  }
+                  onClick={() => handleSocialSignup("NAVER")}
+                  sx={{
+                    backgroundColor: "#03C75A",
+                    color: "#ffffff",
+                    "&:hover": {
+                      backgroundColor: "#02B457",
+                    },
+                  }}
+                >
                   NAVER로 회원가입
-                </Typography>
-              </IconButton>
-              <IconButton
-                onClick={handleGoogleSignup}
-                sx={{
-                  mt: 1,
-                  mb: 1,
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  py: 1,
-
-                  width: "191px",
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                  },
-                }}
-              >
-                <img
-                  src="/img/btn_kakao.png"
-                  style={{ width: "25px", margin: "4px" }}
-                />
-                <Typography style={{ fontWeight: "bold" }} variant="button">
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={
+                    <img
+                      src="/img/btn_kakao.png"
+                      alt="Kakao"
+                      style={{ width: "24px" }}
+                    />
+                  }
+                  onClick={() => handleSocialSignup("KAKAO")}
+                  sx={{
+                    backgroundColor: "#FEE500",
+                    color: "#000000",
+                    "&:hover": {
+                      backgroundColor: "#E5D400",
+                    },
+                  }}
+                >
                   KAKAO로 회원가입
-                </Typography>
-              </IconButton>
-              <IconButton
-                onClick={handleGoogleSignup}
-                sx={{
-                  mt: 1,
-                  mb: 2,
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  py: 1,
-                  "&:hover": {
-                    backgroundColor: "#f5f5f5",
-                  },
-                }}
-              >
-                <img
-                  src="/img/btn_google.png"
-                  style={{ width: "25px", margin: "4px" }}
-                />
-                <Typography style={{ fontWeight: "bold" }} variant="button">
+                </Button>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  startIcon={
+                    <img
+                      src="/img/btn_google.png"
+                      alt="Google"
+                      style={{ width: "24px" }}
+                    />
+                  }
+                  onClick={() => handleSocialSignup("Google")}
+                  sx={{
+                    backgroundColor: "#ffffff",
+                    color: "#000000",
+                    border: "1px solid #ccc",
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                    },
+                  }}
+                >
                   Google로 회원가입
-                </Typography>
-              </IconButton>
-            </div>
-            <Grid container justifyContent="flex-end">
+                </Button>
+              </Box>
+            </Box>
+
+            <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
               <Grid item>
                 <Link href="/login" variant="body2">
                   이미 계정이 있으신가요? 로그인

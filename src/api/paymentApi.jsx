@@ -1,6 +1,5 @@
 import axios from "axios";
 import { API_SERVER_HOST } from "./rootApi";
-import jwtAxios from "../util/jwtUtil";
 
 const host = `${API_SERVER_HOST}/payments`;
 

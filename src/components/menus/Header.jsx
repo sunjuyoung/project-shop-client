@@ -147,6 +147,11 @@ const Header = () => {
     navigate(`/customer/${loginState.id}`);
   };
 
+  const handleMyMenu = () => {
+    setAnchorEl(null);
+    navigate(`/customer/my/${loginState.id}`);
+  };
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -252,7 +257,7 @@ const Header = () => {
           >
             {isLogin && <MenuItem>{loginState.nickname}</MenuItem>}
             <MenuItem onClick={handleProfileMenu}>프로필</MenuItem>
-            <MenuItem>내 계정</MenuItem>
+            <MenuItem onClick={handleMyMenu}>내 계정</MenuItem>
             <MenuItem onClick={handleLogout}>로그아웃</MenuItem>
           </Menu>
         </Box>

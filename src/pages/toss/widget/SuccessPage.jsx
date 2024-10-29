@@ -7,6 +7,7 @@ export function SuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [responseData, setResponseData] = useState(null);
+  const [countdown, setCountdown] = useState(5);
 
   useEffect(() => {
     async function confirm() {
@@ -42,11 +43,27 @@ export function SuccessPage() {
         console.log(error);
         navigate(`/fail?code=${error.code}&message=${error.message}`);
       });
-  }, [searchParams]);
+
+    const timer = setTimeout(() => {
+      navigate("/");
+    }, 5000);
+
+    const countdownInterval = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timer);
+      clearInterval(countdownInterval);
+    };
+  }, [searchParams, navigate]);
 
   return (
     <>
       <div className="box_section" style={{ width: "600px" }}>
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <h3>{`홈 페이지로 ${countdown}초 후 이동합니다.`}</h3>
+        </div>
         <img
           width="100px"
           src="https://static.toss.im/illusts/check-blue-spot-ending-frame.png"
